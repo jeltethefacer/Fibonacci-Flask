@@ -22,6 +22,16 @@
       </ul>
     </div>
     {%endif%}
+    <div>
+      <ul>
+
+      {% for entry in database%}
+        <li>
+          {{entry}}
+        </li>
+      {%endfor%}
+      </ul>
+    </div>
   {%endblock%}
 </body>
 </html>

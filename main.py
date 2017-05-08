@@ -46,10 +46,8 @@ def index():
         number = Numbers(number = form.number.data)
         #print(Numbers.query.all()) you can use it for debugging the db
         db.session.add(number)
-
-
         return redirect(url_for("index"))
-    return render_template("index.html", number=session.get("number"), form=form)
+    return render_template("index.html", number=session.get("number"), form=form, database=Numbers.query.all())
 
 if __name__ == "__main__":
     manager.run()
