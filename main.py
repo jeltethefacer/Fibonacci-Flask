@@ -1,15 +1,29 @@
 from flask import Flask, render_template, redirect, url_for, session
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
+from flask_sqlalchemy import SQLAlchemy
+from flask_script import Manager
 from wtforms import IntegerField, SubmitField
 from wtforms.validators import Required
+import os
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "dit raad je toch nooit in jouw missearbele leven"
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(basedir, 'temp.sqlite')
+app.config["SQLALCHEM_COMMIT_ON_TEARDOWN"] = True
 
 bootstrap = Bootstrap(app)
+db = SQLAlchemy(app)
+manager = Manager(app)
 
+class Numbers(db.Model):
+    __tablename__ = "Numbers"
+    id = db.Column(db.Integer, primary_key = True)
+    number = db.Column(db.Integer)
 
+    def __repr__(self):
+        return "<Number: %i>" % self.number
 
 class NumberForm(FlaskForm):
     number = IntegerField("Which fibonacci number?", validators=[Required()])
@@ -32,4 +46,4 @@ def index():
     return render_template("index.html", number=session.get("number"), form=form)
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    manager.run()
