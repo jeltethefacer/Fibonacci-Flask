@@ -11,7 +11,8 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 app.config["SECRET_KEY"] = "dit raad je toch nooit in jouw missearbele leven"
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///" + os.path.join(basedir, 'temp.sqlite')
-app.config["SQLALCHEM_COMMIT_ON_TEARDOWN"] = True
+app.config["SQLALCHEMY_COMMIT_ON_TEARDOWN"] = True
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = True
 
 bootstrap = Bootstrap(app)
 db = SQLAlchemy(app)
@@ -42,6 +43,11 @@ def index():
     form = NumberForm()
     if form.validate_on_submit():
         session["number"] = fibonacci(form.number.data)
+        number = Numbers(number = form.number.data)
+        #print(Numbers.query.all()) you can use it for debugging the db
+        db.session.add(number)
+
+
         return redirect(url_for("index"))
     return render_template("index.html", number=session.get("number"), form=form)
 
